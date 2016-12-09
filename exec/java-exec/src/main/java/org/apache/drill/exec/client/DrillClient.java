@@ -717,10 +717,9 @@ public class DrillClient implements Closeable, ConnectionThrottle {
     public void runQuery(QueryType type, String plan, UserResultsListener resultsListener) {
         String zdw_prefix = "zdw.`";
         String zdw_suffix = ".zdw";
-        int end = 0;
         int start = plan.indexOf(zdw_prefix);
         if (start > 0) {
-            end = plan.indexOf("`", start + zdw_prefix.length());
+            int end = plan.indexOf("`", start + zdw_prefix.length());
             // get the beginning of the query
             String query_prefix = plan.substring(0, start);
             // get the path in the middle of the query
@@ -739,7 +738,7 @@ public class DrillClient implements Closeable, ConnectionThrottle {
                 }
             } else {
                 String query_path_tmp = query_path + "/tmp/";
-                System.out.println("process all zdw.xz files in \"" + query_path + "\" into \"" + query_path_tmp + "\" dir, change plan to point to that dir, then run query");
+               // System.out.println("process all zdw.xz files in \"" + query_path + "\" into \"" + query_path_tmp + "\" dir, change plan to point to that dir, then run query");
                 File file_dir = new File(query_path);
                 File new_file_dir = new File(query_path_tmp);
                 query_path = query_path_tmp;
@@ -812,6 +811,13 @@ public class DrillClient implements Closeable, ConnectionThrottle {
         }
     }
 
+    /**
+     * Build data file from files extracted from zdw.xz file
+     *
+     * @param desc_file
+     * @param data_file
+     * @param out_file
+     */
     public void BuildDataFile(File desc_file, File data_file, File out_file) {
         try {
             FileReader fr = new FileReader(desc_file.getPath());
@@ -863,6 +869,11 @@ public class DrillClient implements Closeable, ConnectionThrottle {
         }
     }
 
+    /**
+     * Run external script
+     *
+     * @param command
+     */
     public void runScript(String command) {
         //System.out.println("RUNNING COMMAND: " + command);
         String sCommandString = command;
